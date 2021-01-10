@@ -5,7 +5,8 @@ let renderer, scene, camera, light, controls
 
 const init = () => {
   scene = new THREE.Scene()
-  scene.background = new THREE.Color("lightblue")
+  const axesHelper = new THREE.AxesHelper(3)
+  scene.add(axesHelper)
 
   light = new THREE.AmbientLight()
   scene.add(light)
@@ -16,6 +17,12 @@ const init = () => {
     0.1,
     1000
   )
+  camera.position.set(2, 2, 5)
+
+  const planeGeo = new THREE.PlaneGeometry(2, 2)
+  const planeMat = new THREE.MeshNormalMaterial()
+  const plane = new THREE.Mesh(planeGeo, planeMat)
+  scene.add(plane)
 
   renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(window.innerWidth, window.innerHeight)

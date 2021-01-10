@@ -37785,10 +37785,16 @@ var renderer, scene, camera, light, controls;
 
 var init = function init() {
   scene = new THREE.Scene();
-  scene.background = new THREE.Color("lightblue");
+  var axesHelper = new THREE.AxesHelper(3);
+  scene.add(axesHelper);
   light = new THREE.AmbientLight();
   scene.add(light);
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(2, 2, 5);
+  var planeGeo = new THREE.PlaneGeometry(2, 2);
+  var planeMat = new THREE.MeshNormalMaterial();
+  var plane = new THREE.Mesh(planeGeo, planeMat);
+  scene.add(plane);
   renderer = new THREE.WebGLRenderer({
     antialias: true
   });
