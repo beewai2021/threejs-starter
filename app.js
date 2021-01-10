@@ -30,12 +30,14 @@ const init = () => {
   document.body.appendChild(renderer.domElement)
 
   controls = new OrbitControls(camera, renderer.domElement)
+  controls.enableZoom = false
+  controls.enablePan = false
 
   const onWindowResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
-    render()
+    renderer.render(scene, camera)
   }
 
   window.addEventListener("resize", onWindowResize, false)
