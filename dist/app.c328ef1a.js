@@ -37781,47 +37781,59 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-var renderer, scene, camera, light, controls;
+var scene, light, camera, renderer, controls;
 
-var init = function init() {
-  scene = new THREE.Scene();
+var initScene = function initScene() {
+  var canvas = document.querySelector("canvas#webgl"); // scene
+
+  scene = new THREE.Scene(); // axes helper
+
   var axesHelper = new THREE.AxesHelper(3);
-  scene.add(axesHelper);
+  scene.add(axesHelper); // lights
+
   light = new THREE.AmbientLight();
-  scene.add(light);
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(2, 2, 5);
+  scene.add(light); // camera
+
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 0, 5); // basic plane
+
   var planeGeo = new THREE.PlaneGeometry(2, 2);
   var planeMat = new THREE.MeshNormalMaterial();
   var plane = new THREE.Mesh(planeGeo, planeMat);
-  scene.add(plane);
+  scene.add(plane); // renderer
+
   renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
     antialias: true
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.pixelRatio = window.devicePixelRatio;
-  document.body.appendChild(renderer.domElement);
-  controls = new _OrbitControls.OrbitControls(camera, renderer.domElement);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.pixelRatio = Math.min(window.devicePixelRatio || 2); // orbit controls
+
+  controls = new _OrbitControls.OrbitControls(camera, renderer.domElement); // resize
 
   var onWindowResize = function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    render();
+    renderer.pixelRatio = Math.min(window.devicePixelRatio || 2);
   };
 
-  window.addEventListener("resize", onWindowResize, false);
+  window.addEventListener("resize", onWindowResize, false); // animation loop
 
-  var animate = function animate() {
-    requestAnimationFrame(animate);
+  var tick = function tick() {
     renderer.render(scene, camera);
+    requestAnimationFrame(tick);
   };
 
-  animate();
+  tick();
 };
 
-init();
-},{"three":"node_modules/three/build/three.module.js","three/examples/jsm/controls/OrbitControls":"node_modules/three/examples/jsm/controls/OrbitControls.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+window.addEventListener("load", function () {
+  return initScene();
+});
+},{"three":"node_modules/three/build/three.module.js","three/examples/jsm/controls/OrbitControls":"node_modules/three/examples/jsm/controls/OrbitControls.js"}],"../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -37849,7 +37861,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53682" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58371" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -38025,5 +38037,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","app.js"], null)
+},{}]},{},["../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","app.js"], null)
 //# sourceMappingURL=/app.c328ef1a.js.map

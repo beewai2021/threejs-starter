@@ -1,53 +1,65 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
-let renderer, scene, camera, light, controls
+let scene, light, camera, renderer, controls
 
-const init = () => {
+const initScene = () => {
+  const canvas = document.querySelector("canvas#webgl")
+
+  // scene
   scene = new THREE.Scene()
+
+  // axes helper
   const axesHelper = new THREE.AxesHelper(3)
   scene.add(axesHelper)
 
+  // lights
   light = new THREE.AmbientLight()
   scene.add(light)
 
+  // camera
   camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    100
   )
-  camera.position.set(2, 2, 5)
+  camera.position.set(0, 0, 5)
 
+  // basic plane
   const planeGeo = new THREE.PlaneGeometry(2, 2)
   const planeMat = new THREE.MeshNormalMaterial()
   const plane = new THREE.Mesh(planeGeo, planeMat)
   scene.add(plane)
 
-  renderer = new THREE.WebGLRenderer({ antialias: true })
+  // renderer
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true })
   renderer.setSize(window.innerWidth, window.innerHeight)
-  renderer.pixelRatio = window.devicePixelRatio
-  document.body.appendChild(renderer.domElement)
+  renderer.outputEncoding = THREE.sRGBEncoding
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.pixelRatio = Math.min(window.devicePixelRatio || 2)
 
+  // orbit controls
   controls = new OrbitControls(camera, renderer.domElement)
-  controls.enableZoom = false
-  controls.enablePan = false
 
+  // resize
   const onWindowResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
+
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.render(scene, camera)
+    renderer.pixelRatio = Math.min(window.devicePixelRatio || 2)
   }
 
   window.addEventListener("resize", onWindowResize, false)
 
-  const animate = () => {
-    requestAnimationFrame(animate)
+  // animation loop
+  const tick = () => {
     renderer.render(scene, camera)
+    requestAnimationFrame(tick)
   }
 
-  animate()
+  tick()
 }
 
-init()
+window.addEventListener("load", () => initScene())
