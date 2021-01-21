@@ -1,21 +1,31 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import * as dat from "dat.gui"
 
-let scene, light, camera, renderer, controls
+let scene, ambientLight, camera, renderer, controls
 
 const initScene = () => {
   const canvas = document.querySelector("canvas#webgl")
 
+  const gui = new dat.GUI()
+  const materialConfig = {
+    materialColor: 0xf795f7,
+  }
+
   // scene
   scene = new THREE.Scene()
+  scene.background = new THREE.Color(0x2f2f2f)
 
   // axes helper
   const axesHelper = new THREE.AxesHelper(3)
   scene.add(axesHelper)
 
   // lights
-  light = new THREE.AmbientLight()
-  scene.add(light)
+  ambientLight = new THREE.AmbientLight(0xffffff, 0.35)
+  scene.add(ambientLight)
+  const spotLight = new THREE.SpotLight(0xffffff, 0.5)
+  spotLight.position.set(3, 3, 3)
+  scene.add(spotLight)
 
   // camera
   camera = new THREE.PerspectiveCamera(
@@ -24,13 +34,14 @@ const initScene = () => {
     0.1,
     100
   )
-  camera.position.set(0, 0, 5)
+  camera.position.set(2.5, 2.5, 4)
 
-  // basic plane
-  const planeGeo = new THREE.PlaneGeometry(2, 2)
-  const planeMat = new THREE.MeshNormalMaterial()
-  const plane = new THREE.Mesh(planeGeo, planeMat)
-  scene.add(plane)
+  // basic sphere
+  const sphereGeometry = new THREE.SphereBufferGeometry(2, 32, 32)
+  const sphereMaterial = new THREE.MeshStandardMaterial({ flatShading: true })
+  sphereMaterial.color.set(materialConfig.materialColor)
+  const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
+  scene.add(sphere)
 
   // renderer
   renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true })
@@ -41,6 +52,17 @@ const initScene = () => {
 
   // orbit controls
   controls = new OrbitControls(camera, renderer.domElement)
+
+  // gui controller
+  const materialFolder = gui.addFolder("Sphere Material")
+  materialFolder.open()
+  materialFolder.add(sphereMaterial, "wireframe")
+  materialFolder
+    .addColor(materialConfig, "materialColor")
+    .onChange(() => sphereMaterial.color.set(materialConfig.materialColor))
+  materialFolder
+    .add(sphereMaterial, "flatShading")
+    .onChange(() => (sphereMaterial.needsUpdate = true))
 
   // resize
   const onWindowResize = () => {
