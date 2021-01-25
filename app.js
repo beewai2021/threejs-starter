@@ -44,12 +44,13 @@ const initScene = () => {
   scene.add(sphere)
 
   // renderer
-  renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true })
+  renderer = new THREE.WebGLRenderer({ canvas: canvas })
+  renderer.antialias = window.devicePixelRatio < 2 ? true : false
   renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.outputEncoding = THREE.sRGBEncoding
   renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.pixelRatio = Math.min(window.devicePixelRatio || 2)
-
+  
   // orbit controls
   controls = new OrbitControls(camera, renderer.domElement)
 
@@ -70,7 +71,7 @@ const initScene = () => {
     camera.updateProjectionMatrix()
 
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.pixelRatio = Math.min(window.devicePixelRatio || 2)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   }
 
   window.addEventListener("resize", onWindowResize, false)
